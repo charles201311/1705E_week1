@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bobo.senior1.week1.dao.MovieMapper">
+<select id="selectTypes" resultType="type">
+
+select * from t_type 
+
+</select>
+
+
+<insert id="insertMiddle">
+insert into t_middle (mid,tid)values(#{mid},#{tid})
+
+
+</insert>
+<!-- 删除中间 -->
+<delete id="deleteMiddle">
+
+delete from t_middle where mid =#{id}
+
+</delete>
+
+
+<select id="select"  resultType="movie">
+select * from t_moive where id =#{id}
+
+</select>
+
+
+<update id="update">
+update t_movie set name=#{name} ,actor=#{actor} ,about=#{about},pdate=#{pdate}
+where id=#{id}
+
+
+</update>
+
+
+<!-- 批量删除 -->
+<delete id="deletePatch">
+delete from t_moive 
+
+where id in 
+
+<!-- id  in  (1,3,4) -->
+<foreach collection="array" open="(" item="id" separator=","  close=")">
+  #{id}
+</foreach>
+
+</delete>
+
+
+<!-- 执行插入,并返回自增主键 -->
+<insert id="insert"  useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
+<!-- <selectKey order="AFTER" resultType="int" keyProperty="id">
+ select last_insert_id()
+
+</selectKey> -->
+
+insert into t_movie (name ,actor,about,pdate)values(#{name},#{actor},#{about},#{pdate})
+
+</insert>
+
+
+
+
+<select id="selects" resultType="map">
+select m.*, GROUP_CONCAT(t.type) as type from t_movie m LEFT JOIN t_middle d on m.id =d.mid left JOIN t_type t on d.tid =t.id
+<where>
+ <if test="name!=null and name!=''">
+  name like "%" #{name} "%"
+ </if>
+
+</where>
+
+GROUP BY m.id
+
+
+</select>
+
+
+
+
+</mapper>
